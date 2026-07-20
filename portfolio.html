@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Editor Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#5E0006;
+    --maroon-dark:#3B0004;
+    --red:#9B0F06;
+    --orange:#D53E0F;
+    --cream:#EED9B9;
+    --ink:#1A0503;
+    --cream-dim:#c9b294;
+    --shadow: 0 20px 60px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:.5px;
+    line-height:.95;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  section{position:relative;}
+
+  /* ---------- Timeline divider (signature element) ---------- */
+  .timeline{
+    position:relative;
+    height:34px;
+    background:
+      linear-gradient(90deg, transparent 0, transparent calc(100% - 1px)) repeat-x;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    border-top:1px solid rgba(238,217,185,.15);
+    border-bottom:1px solid rgba(238,217,185,.15);
+  }
+  .timeline::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(90deg, rgba(238,217,185,.35) 0 1px, transparent 1px 24px);
+  }
+  .timeline::after{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:2px;
+    background:var(--orange);
+    box-shadow:0 0 12px var(--orange);
+    animation: scrub 8s linear infinite;
+  }
+  @keyframes scrub{ from{left:0%} to{left:100%} }
+
+  /* ---------- Nav ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(26,5,3,.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(238,217,185,.12);
+  }
+  nav{
+    max-width:1180px; margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px;}
+  .logo span{color:var(--orange);}
+  .navlinks{display:flex; gap:28px; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:.6px;}
+  .navlinks a{opacity:.75; transition:opacity .2s, color .2s;}
+  .navlinks a:hover{opacity:1; color:var(--orange);}
+  .nav-cta{
+    background:var(--orange); color:var(--ink); font-weight:700; font-size:13px;
+    padding:10px 18px; border-radius:2px; text-transform:uppercase; letter-spacing:.5px;
+  }
+  .burger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
+  .burger span{width:24px; height:2px; background:var(--cream);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:120px; padding-bottom:60px;
+    background:
+      radial-gradient(ellipse at 70% 20%, rgba(155,15,6,.35), transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(213,62,15,.25), transparent 55%),
+      var(--ink);
+  }
+  .eyebrow{
+    font-size:13px; color:var(--orange); text-transform:uppercase; letter-spacing:3px; margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:34px; height:2px; background:var(--orange);}
+  .hero h1{
+    font-size:clamp(56px,10vw,132px);
+    color:var(--cream);
+  }
+  .hero h1 em{font-style:normal; color:var(--orange);}
+  .hero p.lead{
+    max-width:620px; margin-top:26px; font-size:18px; color:var(--cream-dim); line-height:1.6;
+  }
+  .hero-cta{display:flex; gap:16px; margin-top:36px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:15px 28px; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.6px;
+    border-radius:2px; border:1px solid transparent; cursor:pointer;
+    transition:transform .2s, background .2s, border-color .2s;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--orange); color:var(--ink);}
+  .btn-outline{border-color:rgba(238,217,185,.4); color:var(--cream);}
+  .btn-outline:hover{border-color:var(--orange); color:var(--orange);}
+  .hero-stats{display:flex; gap:48px; margin-top:64px; flex-wrap:wrap;}
+  .stat b{font-family:'Bebas Neue'; font-size:44px; color:var(--cream); display:block;}
+  .stat span{font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim);}
+
+  /* ---------- Section heading pattern ---------- */
+  .section{padding:110px 0;}
+  .section-head{margin-bottom:56px; max-width:680px;}
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{font-size:clamp(38px,6vw,64px); color:var(--cream);}
+  .section-head h2 em{font-style:normal; color:var(--orange);}
+  .section-head p{color:var(--cream-dim); margin-top:16px; font-size:16px; line-height:1.6;}
+  .bg-alt{background:linear-gradient(180deg, var(--maroon-dark), var(--ink));}
+
+  /* ---------- About ---------- */
+  .about-grid{display:grid; grid-template-columns:.9fr 1.3fr; gap:64px; align-items:start;}
+  .about-photo{
+    aspect-ratio:3/4; border-radius:6px; overflow:hidden; position:relative;
+    background:linear-gradient(160deg, var(--red), var(--maroon-dark));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(238,217,185,.15);
+  }
+  .about-photo .initials{font-family:'Bebas Neue'; font-size:120px; color:rgba(238,217,185,.25);}
+  .about-photo img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .about-body p{color:var(--cream-dim); line-height:1.8; margin-bottom:16px; font-size:15.5px;}
+  .expertise{margin-top:36px; display:grid; grid-template-columns:1fr 1fr; gap:12px 28px;}
+  .expertise li{
+    list-style:none; display:flex; gap:12px; align-items:baseline;
+    padding:12px 0; border-bottom:1px solid rgba(238,217,185,.1); font-size:14.5px; color:var(--cream);
+  }
+  .expertise li .idx{color:var(--orange); font-family:'JetBrains Mono'; font-size:12px;}
+
+  /* ---------- Services ---------- */
+  .services-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px;}
+  .service-card{
+    background:rgba(238,217,185,.03);
+    border:1px solid rgba(238,217,185,.12);
+    border-radius:6px; padding:34px 28px; position:relative;
+    transition:transform .25s, border-color .25s, background .25s;
+  }
+  .service-card:hover{transform:translateY(-6px); border-color:var(--orange); background:rgba(213,62,15,.06);}
+  .service-card .num{font-family:'JetBrains Mono'; color:var(--orange); font-size:13px; margin-bottom:22px; display:block;}
+  .service-card h3{font-size:30px; color:var(--cream); margin-bottom:14px;}
+  .service-card p{color:var(--cream-dim); font-size:14.5px; line-height:1.7; margin-bottom:22px;}
+  .service-card a{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--orange);}
+
+  /* ---------- Portfolio ---------- */
+  .cat-tabs, .sub-tabs{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px;}
+  .tab{
+    padding:11px 20px; border:1px solid rgba(238,217,185,.25); border-radius:30px;
+    font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.5px;
+    cursor:pointer; color:var(--cream-dim); background:transparent; transition:all .2s;
+  }
+  .tab.active, .tab:hover{background:var(--orange); border-color:var(--orange); color:var(--ink);}
+  .sub-tabs{margin-bottom:40px;}
+  .sub-tabs .tab{border-radius:4px; font-size:12px; padding:9px 16px;}
+
+  .video-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .video-card{
+    position:relative; aspect-ratio:9/13; border-radius:8px; overflow:hidden; cursor:pointer;
+    background:linear-gradient(160deg, var(--red), var(--maroon-dark));
+    border:1px solid rgba(238,217,185,.12);
+    box-shadow:var(--shadow);
+  }
+  .video-card.wide{aspect-ratio:16/9;}
+  .video-card img{width:100%; height:100%; object-fit:cover; opacity:.75; transition:transform .4s, opacity .3s;}
+  .video-card:hover img{transform:scale(1.06); opacity:.5;}
+  .video-card .ph-title{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:16px;
+    font-family:'Bebas Neue'; font-size:22px; color:rgba(238,217,185,.5);
+  }
+  .video-card .overlay{
+    position:absolute; left:0; right:0; bottom:0; padding:16px;
+    background:linear-gradient(0deg, rgba(0,0,0,.85), transparent);
+  }
+  .video-card .overlay .title{font-size:14.5px; font-weight:700; color:var(--cream);}
+  .video-card .overlay .client{font-size:11.5px; color:var(--cream-dim); text-transform:uppercase; letter-spacing:.5px; margin-top:2px;}
+  .play-btn{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:56px; height:56px; border-radius:50%; background:rgba(213,62,15,.92);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 8px rgba(213,62,15,.18); transition:transform .2s;
+  }
+  .video-card:hover .play-btn{transform:translate(-50%,-50%) scale(1.1);}
+  .play-btn svg{width:18px; height:18px; fill:var(--cream); margin-left:3px;}
+  .empty-msg{color:var(--cream-dim); font-size:14px; padding:40px 0;}
+
+  .skill-levels{margin-top:60px;}
+  .skill-levels .row{display:flex; gap:14px; flex-wrap:wrap;}
+  .skill-chip{
+    display:flex; align-items:center; gap:10px; padding:14px 22px;
+    border:1px solid rgba(238,217,185,.2); border-radius:4px; font-size:13.5px; font-weight:600;
+  }
+  .skill-chip svg{width:14px; height:14px; fill:var(--orange);}
+
+  /* ---------- Feedback ---------- */
+  .feedback-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:22px;}
+  .fb-card{
+    background:rgba(238,217,185,.03); border:1px solid rgba(238,217,185,.12); border-radius:6px;
+    padding:30px; display:flex; flex-direction:column; gap:18px;
+  }
+  .fb-card p{color:var(--cream); font-size:15px; line-height:1.7;}
+  .fb-person{display:flex; align-items:center; gap:14px;}
+  .fb-avatar{
+    width:44px; height:44px; border-radius:50%; background:var(--orange); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue'; font-size:18px;
+    flex-shrink:0;
+  }
+  .fb-person b{display:block; font-size:14.5px; color:var(--cream);}
+  .fb-person span{font-size:12px; color:var(--cream-dim);}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px;}
+  .contact-list{display:flex; flex-direction:column; gap:22px; margin-top:30px;}
+  .contact-item{display:flex; align-items:center; gap:16px; font-size:15px;}
+  .contact-item .ic{
+    width:42px; height:42px; border-radius:50%; border:1px solid rgba(238,217,185,.25);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .contact-item .ic svg{width:17px; height:17px; fill:var(--orange);}
+  .socials{display:flex; gap:14px; margin-top:34px;}
+  .socials a{
+    width:42px; height:42px; border-radius:50%; border:1px solid rgba(238,217,185,.25);
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; transition:all .2s;
+  }
+  .socials a:hover{background:var(--orange); border-color:var(--orange); color:var(--ink);}
+  .big-cta{
+    background:linear-gradient(135deg, var(--red), var(--maroon-dark));
+    border-radius:10px; padding:56px; text-align:center; border:1px solid rgba(238,217,185,.15);
+  }
+  .big-cta h3{font-size:clamp(32px,5vw,48px); color:var(--cream); margin-bottom:14px;}
+  .big-cta p{color:var(--cream-dim); margin-bottom:28px;}
+
+  footer{padding:30px 0; text-align:center; color:var(--cream-dim); font-size:13px; border-top:1px solid rgba(238,217,185,.1);}
+
+  /* ---------- Modal ---------- */
+  .modal{
+    position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:999;
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal.open{display:flex;}
+  .modal-box{width:100%; max-width:900px; aspect-ratio:16/9; position:relative; background:#000; border-radius:6px; overflow:hidden;}
+  .modal-box iframe{width:100%; height:100%; border:0;}
+  .modal-close{
+    position:absolute; top:-46px; right:0; background:none; border:none; color:var(--cream);
+    font-size:32px; cursor:pointer; line-height:1;
+  }
+
+  @media(max-width:900px){
+    .navlinks{display:none;}
+    .burger{display:flex;}
+    .about-grid, .contact-grid{grid-template-columns:1fr;}
+    .services-grid{grid-template-columns:1fr;}
+    .video-grid{grid-template-columns:repeat(2,1fr);}
+    .feedback-grid{grid-template-columns:1fr;}
+    .expertise{grid-template-columns:1fr;}
+  }
+  @media(max-width:520px){
+    .video-grid{grid-template-columns:1fr 1fr;}
+    .hero-stats{gap:28px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><span id="navInitial">Y</span><span id="navName">our Name</span></div>
+    <div class="navlinks">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#feedback">Feedback</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a class="nav-cta" id="navCta" href="#" target="_blank" rel="noopener">Message Me</a>
+    <button class="burger" onclick="document.querySelector('.navlinks').classList.toggle('mobile-open')"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <div class="wrap">
+    <div class="eyebrow mono">VIDEO EDITOR — SHOWREEL</div>
+    <h1 id="heroName">Yassen</h1>
+    <p class="lead" id="heroTagline">A short, punchy line about the kind of edits you make and who you make them for.</p>
+    <div class="hero-cta">
+      <a href="#portfolio" class="btn btn-primary">Watch The Work</a>
+      <a href="#contact" class="btn btn-outline">Start a Project</a>
+    </div>
+    <div class="hero-stats" id="heroStats"></div>
+  </div>
+</section>
+
+<div class="timeline"></div>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">00:00 — ABOUT</div>
+      <h2>The story <em>behind the cuts</em></h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-photo"><span class="initials" id="aboutInitials">YN</span></div>
+      <div class="about-body">
+        <div id="aboutText"></div>
+        <ul class="expertise" id="expertiseList"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="timeline"></div>
+
+<section class="section bg-alt" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">01:00 — SERVICES</div>
+      <h2>What I <em>bring to the edit</em></h2>
+      <p>Every service below links straight to matching samples in the portfolio.</p>
+    </div>
+    <div class="services-grid" id="servicesGrid"></div>
+  </div>
+</section>
+
+<div class="timeline"></div>
+
+<section class="section" id="portfolio">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">02:00 — PORTFOLIO</div>
+      <h2>Samples of <em>real work</em></h2>
+      <p>Tap any card to play the piece. Filter by category and format below.</p>
+    </div>
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="sub-tabs" id="subTabs"></div>
+    <div class="video-grid" id="videoGrid"></div>
+    <div class="skill-levels" id="skillLevels" style="display:none;">
+      <div class="section-head" style="margin-bottom:20px;">
+        <div class="eyebrow mono">EXTRA</div>
+        <h2 style="font-size:28px;">Editing <em>levels</em></h2>
+      </div>
+      <div class="row" id="skillLevelsRow"></div>
+    </div>
+  </div>
+</section>
+
+<div class="timeline"></div>
+
+<section class="section bg-alt" id="feedback">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">03:00 — FEEDBACK</div>
+      <h2>Words from <em>clients</em></h2>
+    </div>
+    <div class="feedback-grid" id="feedbackGrid"></div>
+  </div>
+</section>
+
+<div class="timeline"></div>
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">04:00 — CONTACT</div>
+      <h2>Let's cut something <em>great together</em></h2>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <p style="color:var(--cream-dim); font-size:15px; line-height:1.7;">Have a project in mind? Send a message and I'll reply with availability and a quote.</p>
+        <div class="contact-list" id="contactList"></div>
+        <div class="socials" id="socialsRow"></div>
+      </div>
+      <div class="big-cta">
+        <h3>Ready when you are</h3>
+        <p>Every great edit starts with a quick chat about the footage and the goal.</p>
+        <a href="#" id="ctaWhatsapp" target="_blank" rel="noopener" class="btn btn-primary">WhatsApp Me</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" id="footerText">© 2026 Your Name — Video Editor Portfolio</div>
+</footer>
+
+<div class="modal" id="videoModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="modalFrame"></div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   ################################
+   # Your code to edit the new ones is here
+   ################################
+   Everything you need to personalize is in this one block: your info,
+   your bio, your services, your portfolio videos, your testimonials.
+   Nothing outside this block needs to be touched.
+
+   HOW TO ADD A VIDEO
+   -------------------
+   Add an object to the VIDEOS array below:
+   {
+     category: "editing" | "motion" | "videography",
+     sub: see SUB_KEYS for the chosen category,
+     title: "Project name shown on the card",
+     client: "Client / brand (optional, leave '' if none)",
+     thumbnail: "URL to a thumbnail image, or '' to use a placeholder",
+     youtube: "Full YouTube link (watch, youtu.be, or /shorts/ all work)"
+   }
+   ===================================================================== */
+
+const CONFIG = {
+  name: "Your Name",
+  tagline: "I turn raw footage into clean, fast-paced, story-driven edits for creators and brands.",
+  location: "Egypt, Giza",
+  whatsapp: "https://wa.me/2010XXXXXXXX",     // <-- put your WhatsApp number/link
+  email: "you@example.com",
+  socials: {
+    tiktok:    "https://www.tiktok.com/@yourhandle",
+    instagram: "https://www.instagram.com/yourhandle",
+    youtube:   "https://youtube.com/@yourhandle",
+    facebook:  "https://www.facebook.com/yourhandle"
+  },
+  stats: [
+    { value: "3+", label: "Years Editing" },
+    { value: "50+", label: "Projects Delivered" },
+    { value: "10+", label: "Happy Clients" }
+  ]
+};
+
+const ABOUT_PARAGRAPHS = [
+  "Write your own story here — how you started editing, what pulled you in, and what keeps you doing it.",
+  "Talk about the tools you use, the kind of projects you enjoy, and how you work with clients.",
+  "Close with what makes your process different — communication, turnaround, attention to detail, whatever is true for you."
+];
+
+const EXPERTISE = [
+  "Video Editing", "Color Grading", "Sound Design", "Creative Direction",
+  "Social Media Cuts", "Client Communication", "Motion Graphics", "Cinematography"
+];
+
+const SERVICES = [
+  { title:"Video Editing", desc:"Turning raw footage into a story worth watching — clean pacing, cinematic flow, polished visuals.", link:"editing" },
+  { title:"Motion Graphics", desc:"Purposeful motion and animated elements that make content more dynamic and memorable.", link:"motion" },
+  { title:"Videography & Filmmaking", desc:"From camera to final frame — cinematic footage shaped into a complete, polished film.", link:"videography" }
+];
+
+// Categories + their sub-tabs (edit labels/keys only if you change the structure)
+const CATEGORIES = [
+  { key:"editing",     label:"Video Editing",           subs:[{key:"reels",label:"Short Term (Reels)"},{key:"long",label:"Long Term (YouTube)"},{key:"before",label:"Before & After"}] },
+  { key:"motion",       label:"Motion Graphics",         subs:[{key:"reels",label:"Short Term (Reels)"},{key:"long",label:"Long Term (YouTube)"},{key:"before",label:"Before & After"}] },
+  { key:"videography",  label:"Videography & Direction", subs:[{key:"videography",label:"Videography"},{key:"filmmaking",label:"Filmmaking"}] }
+];
+
+// >>> ADD / REPLACE YOUR REAL VIDEOS BELOW <<<
+const VIDEOS = [
+  { category:"editing", sub:"reels", title:"Project Title 1", client:"Client Name", thumbnail:"", youtube:"https://youtube.com/shorts/REPLACE_ME_1" },
+  { category:"editing", sub:"reels", title:"Project Title 2", client:"Client Name", thumbnail:"", youtube:"https://youtube.com/shorts/REPLACE_ME_2" },
+  { category:"editing", sub:"reels", title:"Project Title 3", client:"Client Name", thumbnail:"", youtube:"https://youtube.com/shorts/REPLACE_ME_3" },
+  { category:"editing", sub:"long",  title:"Project Title 4", client:"Client Name", thumbnail:"", youtube:"https://www.youtube.com/watch?v=REPLACE_ME_4" },
+  { category:"editing", sub:"long",  title:"Project Title 5", client:"Client Name", thumbnail:"", youtube:"https://www.youtube.com/watch?v=REPLACE_ME_5" },
+  { category:"editing", sub:"before",title:"Project Title 6", client:"Client Name", thumbnail:"", youtube:"https://youtu.be/REPLACE_ME_6" },
+
+  { category:"motion",  sub:"reels", title:"Motion Project 1", client:"Client Name", thumbnail:"", youtube:"https://youtube.com/shorts/REPLACE_ME_7" },
+  { category:"motion",  sub:"reels", title:"Motion Project 2", client:"Client Name", thumbnail:"", youtube:"https://youtube.com/shorts/REPLACE_ME_8" },
+  { category:"motion",  sub:"long",  title:"Motion Project 3", client:"Client Name", thumbnail:"", youtube:"https://www.youtube.com/watch?v=REPLACE_ME_9" },
+
+  { category:"videography", sub:"videography", title:"Videography Sample 1", client:"Client Name", thumbnail:"", youtube:"https://youtu.be/REPLACE_ME_10" },
+  { category:"videography", sub:"filmmaking",  title:"Filmmaking Sample 1",  client:"Client Name", thumbnail:"", youtube:"https://youtu.be/REPLACE_ME_11" }
+];
+
+// Optional: skill-level shorts shown only under Video Editing (leave array empty to hide)
+const SKILL_LEVELS = [
+  { label:"Basic",        youtube:"https://youtube.com/shorts/REPLACE_ME_BASIC" },
+  { label:"Intermediate",  youtube:"https://youtube.com/shorts/REPLACE_ME_INTERMEDIATE" },
+  { label:"Professional",  youtube:"https://youtube.com/shorts/REPLACE_ME_PRO" }
+];
+
+const TESTIMONIALS = [
+  { name:"Client Name", role:"Their Role / Company", text:"Write a short, real testimonial from a client here." },
+  { name:"Client Name", role:"Their Role / Company", text:"Write a short, real testimonial from a client here." },
+  { name:"Client Name", role:"Their Role / Company", text:"Write a short, real testimonial from a client here." },
+  { name:"Client Name", role:"Their Role / Company", text:"Write a short, real testimonial from a client here." }
+];
+
+/* ################################
+   # End of edit zone
+   ################################ */
+
+
+/* =====================================================================
+   RENDER ENGINE — you don't need to edit anything below this line
+   ===================================================================== */
+
+function extractYouTubeId(url){
+  if(!url) return "";
+  const patterns = [
+    /youtu\.be\/([A-Za-z0-9_-]{6,})/,
+    /shorts\/([A-Za-z0-9_-]{6,})/,
+    /[?&]v=([A-Za-z0-9_-]{6,})/,
+    /embed\/([A-Za-z0-9_-]{6,})/
+  ];
+  for(const p of patterns){
+    const m = url.match(p);
+    if(m) return m[1];
+  }
+  return "";
+}
+
+function initials(name){
+  return name.trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()||"").join("");
+}
+
+function playIconSVG(){
+  return '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+}
+
+function openModal(youtubeUrl){
+  const id = extractYouTubeId(youtubeUrl);
+  const frame = document.getElementById('modalFrame');
+  if(id){
+    frame.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    document.getElementById('videoModal').classList.add('open');
+  } else {
+    window.open(youtubeUrl, "_blank");
+  }
+}
+function closeModal(){
+  document.getElementById('videoModal').classList.remove('open');
+  document.getElementById('modalFrame').innerHTML = "";
+}
+document.getElementById('videoModal').addEventListener('click', (e)=>{
+  if(e.target.id === 'videoModal') closeModal();
+});
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+// ---- Nav / Hero / About / Contact basics ----
+document.getElementById('navInitial').textContent = initials(CONFIG.name)[0] || "Y";
+document.getElementById('navName').textContent = " " + CONFIG.name.split(" ").slice(1).join(" ");
+document.getElementById('navCta').href = CONFIG.whatsapp;
+document.getElementById('heroName').innerHTML = CONFIG.name.split(" ").map((w,i)=> i===CONFIG.name.split(" ").length-1 ? `<em>${w}</em>` : w).join(" ");
+document.getElementById('heroTagline').textContent = CONFIG.tagline;
+document.getElementById('aboutInitials').textContent = initials(CONFIG.name);
+document.getElementById('ctaWhatsapp').href = CONFIG.whatsapp;
+document.getElementById('footerText').textContent = `© ${new Date().getFullYear()} ${CONFIG.name} — Video Editor Portfolio`;
+
+const statsRow = document.getElementById('heroStats');
+CONFIG.stats.forEach(s=>{
+  const d = document.createElement('div'); d.className='stat';
+  d.innerHTML = `<b>${s.value}</b><span>${s.label}</span>`;
+  statsRow.appendChild(d);
+});
+
+const aboutText = document.getElementById('aboutText');
+ABOUT_PARAGRAPHS.forEach(p=>{
+  const el = document.createElement('p'); el.textContent = p; aboutText.appendChild(el);
+});
+
+const expertiseList = document.getElementById('expertiseList');
+EXPERTISE.forEach((e,i)=>{
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="idx mono">${String(i+1).padStart(2,'0')}</span> ${e}`;
+  expertiseList.appendChild(li);
+});
+
+const servicesGrid = document.getElementById('servicesGrid');
+SERVICES.forEach((s,i)=>{
+  const card = document.createElement('div'); card.className='service-card';
+  card.innerHTML = `<span class="num mono">0${i+1}</span><h3>${s.title}</h3><p>${s.desc}</p><a href="#portfolio" onclick="selectCategory('${s.link}')">View Project →</a>`;
+  servicesGrid.appendChild(card);
+});
+
+const contactList = document.getElementById('contactList');
+const contactItems = [
+  { icon:'phone', label: CONFIG.whatsapp.replace('https://wa.me/','+'), href: CONFIG.whatsapp },
+  { icon:'mail',  label: CONFIG.email, href: `mailto:${CONFIG.email}` },
+  { icon:'pin',   label: CONFIG.location, href:"#" }
+];
+const ICONS = {
+  phone:'<svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.4 21 3 13.6 3 4.9 3 4.4 3.4 4 4 4h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>',
+  mail:'<svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm8 9L4.4 6.5v11L12 13zm0-2.2 7.4-4.3H4.6L12 10.8zm2.2-.6L21 8v9.5l-7.4-6.3z"/></svg>',
+  pin:'<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>'
+};
+contactItems.forEach(c=>{
+  const el = document.createElement('a'); el.className='contact-item'; el.href = c.href; el.target = c.icon==='phone' ? "_blank" : "_self";
+  el.innerHTML = `<span class="ic">${ICONS[c.icon]}</span> ${c.label}`;
+  contactList.appendChild(el);
+});
+
+const socialsRow = document.getElementById('socialsRow');
+const SOC_LABELS = { tiktok:"TT", instagram:"IG", youtube:"YT", facebook:"FB" };
+Object.keys(CONFIG.socials).forEach(key=>{
+  const a = document.createElement('a'); a.href = CONFIG.socials[key]; a.target="_blank"; a.rel="noopener";
+  a.textContent = SOC_LABELS[key] || key.slice(0,2).toUpperCase();
+  socialsRow.appendChild(a);
+});
+
+// ---- Feedback ----
+const feedbackGrid = document.getElementById('feedbackGrid');
+TESTIMONIALS.forEach(t=>{
+  const card = document.createElement('div'); card.className='fb-card';
+  card.innerHTML = `<p>"${t.text}"</p><div class="fb-person"><div class="fb-avatar">${initials(t.name)}</div><div><b>${t.name}</b><span>${t.role}</span></div></div>`;
+  feedbackGrid.appendChild(card);
+});
+
+// ---- Portfolio: tabs + grid ----
+let activeCategory = CATEGORIES[0].key;
+let activeSub = CATEGORIES[0].subs[0].key;
+
+function selectCategory(catKey){
+  activeCategory = catKey;
+  const cat = CATEGORIES.find(c=>c.key===catKey);
+  activeSub = cat.subs[0].key;
+  renderTabs(); renderGrid();
+  document.getElementById('portfolio').scrollIntoView({behavior:'smooth'});
+}
+function selectSub(subKey){ activeSub = subKey; renderTabs(); renderGrid(); }
+
+function renderTabs(){
+  const catTabs = document.getElementById('catTabs');
+  catTabs.innerHTML = "";
+  CATEGORIES.forEach(c=>{
+    const t = document.createElement('div');
+    t.className = 'tab' + (c.key===activeCategory ? ' active' : '');
+    t.textContent = c.label;
+    t.onclick = ()=>selectCategory(c.key);
+    catTabs.appendChild(t);
+  });
+
+  const subTabs = document.getElementById('subTabs');
+  subTabs.innerHTML = "";
+  const cat = CATEGORIES.find(c=>c.key===activeCategory);
+  cat.subs.forEach(s=>{
+    const t = document.createElement('div');
+    t.className = 'tab' + (s.key===activeSub ? ' active' : '');
+    t.textContent = s.label;
+    t.onclick = ()=>selectSub(s.key);
+    subTabs.appendChild(t);
+  });
+
+  document.getElementById('skillLevels').style.display = (activeCategory==='editing' && SKILL_LEVELS.length) ? 'block' : 'none';
+}
+
+function renderGrid(){
+  const grid = document.getElementById('videoGrid');
+  grid.innerHTML = "";
+  const items = VIDEOS.filter(v=>v.category===activeCategory && v.sub===activeSub);
+  if(!items.length){
+    grid.innerHTML = `<div class="empty-msg">No videos added in this section yet — add one in the VIDEOS list at the top of the script.</div>`;
+    return;
+  }
+  items.forEach(v=>{
+    const card = document.createElement('div'); card.className = 'video-card' + (activeSub==='long' ? ' wide' : '');
+    card.onclick = ()=>openModal(v.youtube);
+    if(v.thumbnail){
+      card.innerHTML = `<img src="${v.thumbnail}" alt="${v.title}">`;
+    } else {
+      card.innerHTML = `<div class="ph-title">${v.title}</div>`;
+    }
+    card.innerHTML += `<div class="play-btn">${playIconSVG()}</div>
+      <div class="overlay"><div class="title">${v.title}</div>${v.client ? `<div class="client">${v.client}</div>` : ""}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+const skillRow = document.getElementById('skillLevelsRow');
+SKILL_LEVELS.forEach(s=>{
+  const chip = document.createElement('div'); chip.className='skill-chip'; chip.style.cursor='pointer';
+  chip.innerHTML = `${playIconSVG()} ${s.label}`;
+  chip.onclick = ()=>openModal(s.youtube);
+  skillRow.appendChild(chip);
+});
+
+renderTabs();
+renderGrid();
+</script>
+</body>
+</html>
